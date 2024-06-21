@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,7 @@ import com.Auto.App.dtos.JwtDto;
 import com.Auto.App.dtos.SignInDto;
 import com.Auto.App.dtos.SignUpDto;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -43,7 +42,7 @@ public class AuthController {
         return "ok";
     }
    
-    
+   
 
     @PostMapping("/signin")
     public JwtDto  signIn(@RequestBody SignInDto data) {
@@ -53,5 +52,9 @@ public class AuthController {
         User user = (User) authUser.getPrincipal();
         var accessToken = tokenService.generateAccessToken((User) authUser.getPrincipal());
         return new JwtDto(accessToken, user.getUsername(), data.password());
+    } 
+    @GetMapping("/signin/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(service.getUserByEmail(email));
     }
 }
